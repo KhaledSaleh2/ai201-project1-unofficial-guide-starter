@@ -14,6 +14,13 @@
      Example: "Student reviews of CS professors at [university] — useful because official
      course descriptions don't reflect teaching style, exam difficulty, or workload." -->
 
+Student-generated reviews of Computer Sciences courses and professors at the University of
+Wisconsin–Madison. The system answers candid questions about teaching quality, exam and workload
+difficulty, grading, and which electives are worth taking — knowledge students share on Rate My
+Professors and r/UWMadison but that the official course catalog never captures. It combines three
+source types: opinionated professor reviews (Rate My Professors), factual grade-distribution data
+(MadGrades), and long-form peer discussion (r/UWMadison).
+
 ---
 
 ## Document Sources
