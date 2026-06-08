@@ -40,14 +40,14 @@ discussion (r/UWMadison), so it can both aggregate opinion and ground answers in
 | 2 | Rate My Professors | Florian Heimerl (ML / data visualization) | https://www.ratemyprofessors.com/professor/2776309 |
 | 3 | Rate My Professors | Eric Bach (theory / algorithms) | https://www.ratemyprofessors.com/professor/125529 |
 | 4 | Rate My Professors | Jin-Yi Cai (theory / complexity) | https://www.ratemyprofessors.com/professor/425160 |
-| 5 | Rate My Professors | 1–2 more profs you personally had — browse the UW-Madison page | https://www.ratemyprofessors.com/school/18418 |
+| 5 | Rate My Professors | Gary Dahl | https://www.ratemyprofessors.com/professor/2770358 |
 | 6 | MadGrades | CS 200 — Programming I (grade distribution) | https://madgrades.com/courses/3795cfcc-807e-3ca7-8348-d4a909a42f06 |
 | 7 | MadGrades | CS 300 — Programming II (grade distribution) | https://madgrades.com/courses/07eabcce-fdab-3781-99ca-7dc2dc3544ae |
 | 8 | MadGrades | CS 354 — Machine Organization & Programming (grade distribution) | https://madgrades.com/courses/cb48129f-99e6-36fa-9a20-46e0617e2499 |
-| 9 | MadGrades | CS 540 / 537 / 577 — find via CS subject search | https://madgrades.com/search?subjects%5B0%5D=266 |
-| 10 | Reddit (r/UWMadison) | Thread: "best / favorite CS professors" | [paste thread permalink] |
-| 11 | Reddit (r/UWMadison) | Thread: "is CS 537 (OS) hard / how to survive it" | [paste thread permalink] |
-| 12 | Reddit (r/UWMadison) | Thread: general CS course-selection / which electives advice | [paste thread permalink] |
+| 9 | MadGrades | CS 540 — Intro to AI (grade distribution) | https://madgrades.com/courses/de8a0a8c-e076-3ec2-8b6c-e1e1ee82a53e |
+| 10 | Reddit (r/UWMadison) | Thread: "Who do you think is the best professor in the CS department and why?" | https://www.reddit.com/r/UWMadison/comments/pfoc2b/who_do_you_think_is_the_best_professor_in_the_cs/ |
+| 11 | Reddit (r/UWMadison) | Thread: "CS 537 OS" | https://www.reddit.com/r/UWMadison/comments/101k2gg/cs_537_os/ |
+| 12 | Reddit (r/UWMadison) | Thread: "Best 500+ CS courses" | https://www.reddit.com/r/UWMadison/comments/qqjwyv/best_500_cs_courses/ |
 
 ---
 
@@ -98,7 +98,7 @@ discussion (r/UWMadison), so it can both aggregate opinion and ground answers in
 | 2 | Is CS 537 (Operating Systems) considered a hard course? | Yes — heavy workload, demanding projects (xv6/OS-TEP), but well-regarded. Tests opinion aggregation across reviews + Reddit. |
 | 3 | What is the average GPA / grade distribution for CS 540? | The actual MadGrades figure (e.g., a specific average GPA / % A). Factual ground-truth — tests whether retrieval pulls the MadGrades doc, not opinion. |
 | 4 | Which is more difficult, CS 537 (Operating Systems) or CS 577 (Algorithms)? | A comparison grounded in both courses' reviews; may surface contradictory opinions. Tests multi-course comparison. |
-| 5 | Does Professor [pick one with little/no grading detail in your docs] curve exams? | Likely **not answerable** from the collected docs — the intended trap. A grounded system should say it doesn't know rather than invent a curve. This is your planned failure / hallucination case. |
+| 5 | Does Professor Ali Abedi curve exams? | **Not answerable** from the collected docs — the intended trap. Abedi has no review page in the corpus, but he teaches CS 537, the *same course* as Remzi (source #1, who *is* in the corpus). The risk: semantic search retrieves Remzi's CS 537 reviews (same course, same OS/exam vocabulary) and the model **conflates the two professors**, inventing a curve for Abedi from Remzi's reviews. A grounded system should instead say it has no information on Abedi. This is the planned failure case — interesting because it tests conflation via plausible-but-wrong retrieval, not just an empty result. |
 
 ---
 

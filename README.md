@@ -31,16 +31,18 @@ source types: opinionated professor reviews (Rate My Professors), factual grade-
 
 | # | Source | Type | URL or file path |
 |---|--------|------|-----------------|
-| 1 | | | |
-| 2 | | | |
-| 3 | | | |
-| 4 | | | |
-| 5 | | | |
-| 6 | | | |
-| 7 | | | |
-| 8 | | | |
-| 9 | | | |
-| 10 | | | |
+| 1 | Rate My Professors | Professor reviews | https://www.ratemyprofessors.com/professor/131676 (Remzi Arpaci-Dusseau, CS 537) |
+| 2 | Rate My Professors | Professor reviews | https://www.ratemyprofessors.com/professor/2776309 (Florian Heimerl, ML / data viz) |
+| 3 | Rate My Professors | Professor reviews | https://www.ratemyprofessors.com/professor/125529 (Eric Bach, theory / algorithms) |
+| 4 | Rate My Professors | Professor reviews | https://www.ratemyprofessors.com/professor/425160 (Jin-Yi Cai, theory / complexity) |
+| 5 | Rate My Professors | Professor reviews | https://www.ratemyprofessors.com/professor/2770358 (Gary Dahl, CS 300 / 354) |
+| 6 | MadGrades | Grade distribution | https://madgrades.com/courses/3795cfcc-807e-3ca7-8348-d4a909a42f06 (CS 200 — Programming I) |
+| 7 | MadGrades | Grade distribution | https://madgrades.com/courses/07eabcce-fdab-3781-99ca-7dc2dc3544ae (CS 300 — Programming II) |
+| 8 | MadGrades | Grade distribution | https://madgrades.com/courses/cb48129f-99e6-36fa-9a20-46e0617e2499 (CS 354 — Machine Organization) |
+| 9 | MadGrades | Grade distribution | https://madgrades.com/courses/de8a0a8c-e076-3ec2-8b6c-e1e1ee82a53e (CS 540 — Intro to AI) |
+| 10 | Reddit (r/UWMadison) | Discussion thread | https://www.reddit.com/r/UWMadison/comments/pfoc2b/who_do_you_think_is_the_best_professor_in_the_cs/ |
+| 11 | Reddit (r/UWMadison) | Discussion thread | https://www.reddit.com/r/UWMadison/comments/101k2gg/cs_537_os/ |
+| 12 | Reddit (r/UWMadison) | Discussion thread | https://www.reddit.com/r/UWMadison/comments/qqjwyv/best_500_cs_courses/ |
 
 ---
 
