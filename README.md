@@ -92,6 +92,23 @@ I use a different chunking strategy per source type (see planning.md).
 
 **Final chunk count:** 387 chunks across all documents.
 
+### Sample chunks (5 labeled, with source document)
+
+1. **`documents/ratemyprofessors/eric_bach.txt`** (RateMyProfessors — Eric Bach, CS577):
+   > Rate My Professors review of Eric Bach (CS577): Bach is quite good. He's a little old school and only lectures on a chalkboard, however, he tries to put up relevant material on the website. He's slow to grade, but overall, a very good professor who knows his stuff...
+
+2. **`documents/ratemyprofessors/florian_heimerl.txt`** (RateMyProfessors — Florian Heimerl, CS400):
+   > Rate My Professors review of Florian Heimerl (CS400): My biggest issue with Florian is his lecturing ability. He speaks at an unbearably awkward pace and is super hard to follow in lectures, with completely illegible handwriting...
+
+3. **`documents/madgrades/cs_grades.txt`** (MadGrades — COMP SCI 540, templated sentence):
+   > At UW-Madison, COMP SCI 540 (Introduction to Artificial Intelligence) has a cumulative GPA of 3.30 across all instructors and semesters. Grade distribution: 35.6% got A, 23.6% got AB, 20.9% got B, 9.5% got BC, 6.0% got C, 1.7% got D, 1.2% got F.
+
+4. **`documents/reddit/best_500_cs_courses.txt`** (Reddit thread, 500-char window):
+   > Reddit thread 'Best 500+ CS courses': ...chooseusernamee 571 is the best value and most practical course if you intend to be a software developer and wants to work as a front end developer...
+
+5. **`documents/reddit/cs537_os.txt`** (Reddit thread, 500-char window):
+   > Reddit thread 'CS 537 OS': ...The major difficulty of algos is just conceptual. Alot of the concepts are very abstract and you will have to spend a lot of time reasoning through them. Use office hours as much as possible...
+
 ---
 
 ## Embedding Model
@@ -105,6 +122,27 @@ I use a different chunking strategy per source type (see planning.md).
 **Model used:** `all-MiniLM-L6-v2` via sentence-transformers, run locally. It is small and limited, but sufficient here: the corpus is small, the documents are short, and everything is in English. Running locally also means no API key, no rate limits, and student-written content never leaves the machine. Retrieval uses top-k = 7 — a higher k chosen deliberately because the chunks are small (one review / one sentence) and individually carry little context, so more of them are needed to give the LLM enough to work with.
 
 **Production tradeoff reflection:** If cost weren't a constraint I'd move to a model that captures nuance better (e.g. `text-embedding-3-large` or a self-hosted `BGE-large`), because Rate My Professors and Reddit text is informal, sarcastic, human language where nuance matters for retrieval. I'd weigh: accuracy on this slang-heavy domain (favoring a larger model), context length (a longer limit would let me embed bigger Reddit chunks without truncation), latency and per-token cost (favoring local), and data privacy — sending student-written reviews to a third-party API is a real consideration. Multilingual support is low priority since the corpus is all English.
+
+### Retrieval test results
+
+**Query 1 — "Is CS 537 hard?"** — top 3 chunks:
+1. (Reddit — CS 537 OS) "...I'm signed up for intro to operating systems next semester and was wondering... what the hw and exams are like..."
+2. (Reddit — CS 537 OS) "...The major difficulty of algos is just conceptual. Alot of the concepts are very abstract..."
+3. (Reddit — Best 500+ CS courses) "...OS should be required tbh. Other than that, 577 is hard but pretty essential..."
+
+*Why these are relevant:* all three come from threads explicitly discussing CS 537 / 500-level workload. Note the query never uses the words "operating systems" or "projects," yet semantic search surfaced the right OS-difficulty discussion — it matched on meaning, not keywords.
+
+**Query 2 — "What is the GPA for CS 540?"** — top 3 chunks:
+1. (MadGrades — COMP SCI 540) "...cumulative GPA of 3.30 ... 35.6% got A, 23.6% got AB..."
+2. (MadGrades — COMP SCI 354) "...cumulative GPA of 3.10..."
+3. (MadGrades — COMP SCI 300) "...cumulative GPA of 3.29..."
+
+*Why these are relevant:* the exact course (CS 540) ranked #1, with sibling MadGrades course chunks following. Templating the grade tables into sentences is what made a numeric question retrieve the numeric source instead of opinion reviews.
+
+**Query 3 — "Which professor has the best lectures?"** — top 3 chunks:
+1. (RateMyProfessors — Eric Bach, CS577) "...Not always an engaging lecturer, but a very good teacher overall. Recommended."
+2. (RateMyProfessors — Gary Dahl, CS400) "Gary's lectures are second to none. He is very well organized."
+3. (RateMyProfessors — Florian Heimerl, CS400) "lectures are slow, but explains things well."
 
 ---
 
@@ -124,6 +162,53 @@ I use a different chunking strategy per source type (see planning.md).
 Generation temperature is set to 0.1 to keep answers tight to the context. Structurally, the question and context are sent in a single user message and only the top-k=7 retrieved chunks are ever provided — the model has no other source of information.
 
 **How source attribution is surfaced in the response:** Two ways. (1) The model cites passages inline with bracketed numbers (`[1]`, `[3]`). (2) After every answer the interface prints a `Sources:` list mapping each number to a human-readable source — e.g. `[1] RateMyProfessors — Remzi Arpaci-Dusseau (CS537)`, `[1] MadGrades — COMP SCI 540`, or `[1] Reddit — CS 537 OS`.
+
+---
+
+## Query Interface
+
+The interface is a command-line tool: `python rag.py ask`.
+
+- **Input field:** a free-text question typed at the `>` prompt (type `quit` or `exit` to stop).
+- **Output fields:** (1) a grounded natural-language **answer** with inline `[n]` citations, then (2) a **`Sources:`** block listing each cited number's origin document.
+
+**Sample interaction transcript (one complete query and response):**
+
+```
+> What is the average GPA for CS 540?
+
+The average GPA for COMP SCI 540 (Introduction to Artificial Intelligence) is 3.30.
+The grade distribution is: 35.6% A, 23.6% AB, 20.9% B, 9.5% BC, 6.0% C, 1.7% D,
+1.2% F [1].
+
+Sources:
+  [1] MadGrades — COMP SCI 540
+  [2] MadGrades — COMP SCI 354 (also ECE 354)
+  [3] MadGrades — COMP SCI 200
+  [4] MadGrades — COMP SCI 300
+  [5] RateMyProfessors — Gary Dahl (COMPSCI400)
+  [6] Reddit — Best 500+ CS courses
+  [7] RateMyProfessors — Gary Dahl (CS400)
+```
+
+---
+
+## Example Responses
+
+**Response 1 — source attribution visible — "Is CS 537 (Operating Systems) hard?"**
+> According to the context passages, CS 537 (Operating Systems) is considered a hard course. One Reddit user mentions that "OS was the hardest CS course I took besides 577 algos" [1]. Another notes the projects can get "very involved" [1], and that some projects took 20–30 hours [5]. However, the final curve was "very generous" [1].
+>
+> Sources: [1] Reddit — CS 537 OS · [5] Reddit — CS 537 OS · [3] Reddit — Best 500+ CS courses
+
+**Response 2 — source attribution visible — "What is the average GPA for CS 540?"**
+> The average GPA for COMP SCI 540 (Introduction to Artificial Intelligence) is 3.30. The grade distribution is: 35.6% A, 23.6% AB, 20.9% B, 9.5% BC, 6.0% C, 1.7% D, 1.2% F [1].
+>
+> Sources: [1] MadGrades — COMP SCI 540
+
+**Out-of-scope query (refusal) — "Does Professor Ali Abedi curve exams?"**
+> I don't have information on that in my sources. There is no mention of Professor Ali Abedi in the provided context passages [1]-[7].
+>
+> The system declined rather than fabricating a curve from the other CS 537 professors' reviews that retrieval surfaced — the grounding instruction held.
 
 ---
 
