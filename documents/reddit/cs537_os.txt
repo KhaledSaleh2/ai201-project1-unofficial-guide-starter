@@ -1,0 +1,106 @@
+Source: Reddit (r/UWMadison)
+Thread: CS 537 OS
+URL: https://www.reddit.com/r/UWMadison/comments/101k2gg/cs_537_os/
+=== THREAD ===
+
+Cs 537 OS
+Academics
+I'm signed up for intro to operating systems next semester and was wondering if anyone could drop a comment abt what the hw and exams are like for it or just like the general workload.
+
+Upvote 16 Downvote 28 Go to comments Share
+
+u/lenovo avatar
+lenovo
+• Promoted
+r/smallbusiness knows how important the right support is. 💪 With Lenovo Pro, get tech solutions to power your business, straight from the experts. 📈 Save up to an extra 5% when you join now and enjoy free perks, extra savings and rewards. Make your move with Lenovo.💼
+Shop Now
+a2.adform.net
+
+Join the conversation
+Sort by: Best
+
+Comments Section
+
+vovie000
+• 3y ago
+OS was the hardest CS course I took besides 577 algos.
+My biggest tip would be to start the projects as soon as possible, brush up on your C skills. Projects can get very involved.
+But all in all it was a good class and the final curve was very generous.
+Source: I just took it this semester with remzi
+Upvote 22 Downvote Reply Award Share
+
+[deleted]
+• 3y ago
+What about 577? I plan to take it next semester. What's the major difficulty?
+Upvote 1 Downvote Reply Award Share
+
+vovie000
+• 3y ago
+I took it over the summer and it was my only course - so I was able to devote alot of time to it. If I had taken it during the school year I think I would have done worse.
+The major difficulty of algos is just conceptual. Alot of the concepts are very abstract and you will have to spend a lot of time reasoning through them. Use office hours as much as possible, and search for YouTube videos to fill your gaps in understanding.
+Upvote 4 Downvote Reply Award Share
+
+u/SmokeyBeaar avatar
+SmokeyBeaar
+• 3y ago
+Also took it this semester. The grade layout for Remzi was 5% HW quizzes, 45% Exams, 50% Projects. The HW should be a free 100% on each as they are unlimited attempts and moreso meant to keep you on track with the pacing of material. The exams are very fair and if you pay attention in class, go to discussions, and do the HW, you should do fine.
+The projects are where the class becomes notorious. The first one or two were fairly "easy" and meant to prepare you. When I say easy, you can still expect to put about in 10 hours, maybe 15 if you are very rusty with C. On the later projects, I spent maybe 20-30 hours on some. Office hours are practically a must to go to unless you are really good at C. (I also didn't have a partner though, so mileage may vary)
+Now, saying all that, the tests used to grade the projects are all released partway through each project deadline. This means if you pass all the tests when you turn it in, you will get 100% on the project (except for the scheduler possibly).
+I ended with a 78% before the final and got an AB as my final grade. I don't know what the curve was and I don't even know what I got on the final. All said and done, the class is fair and rewards hard work.
+Upvote 12 Downvote Reply Award Share
+
+u/Pale_Television_9160 avatar
+Pale_Television_9160
+• 3y ago
+How are exams like? They are objective or subjective questions? And what's the difficulty level?
+Upvote 2 Downvote Reply Award Share
+
+u/SmokeyBeaar avatar
+SmokeyBeaar
+• 3y ago
+I thought the exams were 'easier' than the projects as the projects were massive time investments. The questions were very reflective of what we learned in class and had quizzes on. They were multiple choice so pretty objective. If you understand the quiz questions enough to explain them, then you should do fine on the exams. Granted, this is all for Remzi's class.
+Upvote 2 Downvote Reply Award Share
+
+u/spectrumbusiness avatar
+u/spectrumbusiness
+• Promoted
+Get Business Internet Free Forever when you add four mobile lines from Spectrum Mobile.
+Learn More
+spectrum.com
+
+u/jiboxiake avatar
+jiboxiake
+• 3y ago
+I took it with the second goat Shivaram in 2020 spring. One of the best classes I ever took at this school (besides database 564 and 764). I ended up going to a different school for my phd and guess what I was the best student in their grad OS class and I got A+ at the end. So if you can take with him, do it. 3 easy pieces is also a blessing.
+Upvote 9 Downvote Reply Award Share
+
+u/Pale_Television_9160 avatar
+Pale_Television_9160
+• 3y ago
+3 easy pieces, what is that?
+Upvote 2 Downvote Reply Award Share
+
+u/jiboxiake avatar
+jiboxiake
+• 3y ago
+A book written by Remzi and Andrea about OS.
+Upvote 2 Downvote Reply Award Share
+
+u/Bulky_Comfortable812 avatar
+Bulky_Comfortable812
+• 3y ago
+READ THE BOOK ASAP.
+https://pages.cs.wisc.edu/~remzi/OSTEP/
+Upvote 5 Downvote Reply Award Share
+
+[deleted]
+• 3y ago
+Start the projects early. Go to office hours. Either go to discussion or use the discussion notes(lots of the code for our projects could be copy pasted from discussions).
+GitHub is your friend.
+Upvote 3 Downvote Reply Award Share
+
+[deleted]
+• 3y ago
+Try to avoid taking it with anything else which is project intensive.
+The projects for 537 can be pretty brutal for a lot of people.
+Upvote 3 Downvote Reply Award Share

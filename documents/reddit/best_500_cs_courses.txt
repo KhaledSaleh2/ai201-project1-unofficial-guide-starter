@@ -1,0 +1,105 @@
+Source: Reddit (r/UWMadison)
+Thread: Best 500+ CS courses
+URL: https://www.reddit.com/r/UWMadison/comments/qqjwyv/best_500_cs_courses/
+=== THREAD ===
+
+Best 500+ CS courses
+Academics
+Which CS 500+ courses would you say are the most useful for a cs major?
+
+Upvote 25 Downvote 26 Go to comments Share
+
+Join the conversation
+Sort by: Best
+
+Comments Section
+
+chooseusernamee
+• 5y ago
+571 is the best value and most practical course if you intend to be a software developer and wants to work as a front end developer
+Upvote 20 Downvote Reply Award Share
+
+Adilnur OP
+• 5y ago
+Thank you for your response. Do you know any other practical courses for front end development?
+Upvote 6 Downvote Reply Award Share
+
+chooseusernamee
+• 5y ago
+I think Software Engineering (CS 506) might help but that is more like a full stack. 571 is the only front end course that is practical.
+Upvote 10 Downvote Reply Award Share
+
+magikathy
+• 5y ago
+407 for mobile development fair warning - it's extremely disorganized. 571 is great content for front-end but also a super heavy workload. 570 is great for content on HCI but the professor is … a mess.
+Upvote 4 Downvote Reply Award Share
+
+cheesecurdandme
+• 5y ago • Edited 5y ago
+CS 537/536/552 (OS/compiler/processor) if you are interested in how computer works at the fundamental level. maybe not super useful for job, but probably will make you a much better programmer.
+edit: like others said. you will probably find lots of intro level machine learning classes online, and many of them are better taught (with lecture/projects/certificates). it is, however, rare to see offers of OS/compiler/architecture classes online. And these areas are traditionally what UW-Madison CS department is famous for. It can be a very rewarding experience if you got the right instructor for these courses.
+i should probably also adds 564/640 (database/computer networks) to the list.
+Upvote 14 Downvote Reply Award Share
+
+u/CoopertheFluffy avatar
+CoopertheFluffy
+• 5y ago
+Definitely take OS. Remzi and Andrea are great.
+Upvote 13 Downvote Reply Award Share
+
+[deleted]
+• 5y ago
+Yea, the Remzi/Andrea OS class is absolutely top tier.
+Upvote 10 Downvote Reply Award Share
+
+cheesecurdandme
+• 5y ago • Edited 5y ago
+yeah, and not only that.
+their textbook is a textbook example of a great textbook! 😆
+Upvote 9 Downvote Reply Award Share
+
+desquared
+• 5y ago
+I'll second the other comments about 537...I wasn't that interested in operating systems but took it and found it super super interesting. Also, Swift is a great teacher.
+Also consider 640, networking. It'll give you an appreciation for how utterly amazing it is that you can do live video from your phone with someone on the other side of the world.
+Upvote 7 Downvote Reply Award Share
+
+EnuffIsEnough
+• 5y ago
+Not sure if it's offered, but 564 is a must if you want to do anything related to data analysis/data science.
+Upvote 6 Downvote Reply Award Share
+
+u/arcticccc avatar
+arcticccc
+• 5y ago
+OS should be required tbh. Other than that, 577 is hard but pretty essential to really start understanding algorithmic strategies and complexity. I think 540 is a good overview of AI too
+Upvote 6 Downvote Reply Award Share
+
+[deleted]
+• 5y ago
+If you are interested in artificial intelligence/machine learning kind of stuff, I'd recommend 540.
+Upvote 2 Downvote Reply Award Share
+
+SiciliaDraco
+Cake icon
+• 5y ago
+I'd reccomend not taking 540. You're better off taking an online course somewhere rather than taking it here.
+Lectures are very poorly explained by my instructor (breezes through slides without clarifying).
+The class doesnt even have the correct prereqs. The prereqs for this class were cs 300 and calc 1 and the instructor decides to breeze through parts of multivariable, linear algebra, and graph theory in lectures. I've already taken linear, multivariable, and dsa and I STILL felt very rushed
+I havent learnt a single thing in doing the projects except being handheld every step of the way in the project descriptions
+The exam questions barely have any correlation with the projects. I've gotten a 100 on every single project so far but failed the midterm because most of the stuff asked in the midterm never correlated with our projects that we did
+And another addition to the exam, the ta's made all their questions for the exams seperately without checking in with each other so they never realized how long their exam was estimated to take
+Feel free to take this advice with a grain of salt as the only other cs class I'm taking here is CS 400 and I'm a freshman but holy fuck this class is a clusterfuck compared to 400 where I'm actually learning something and the lectures are well explained.
+Upvote 13 Downvote Reply Award Share
+
+chooseusernamee
+• 5y ago
+I think telling people against it just because you had a poorer instructor or TAs is a bit unfair to the class since instructor changes almost every semester. I took it with Sharon and Fred and both are awesome. I have to disagree wholly that projects teach you nothing. I understand so much from those projects. Those are very fundamental projects and are not supposed to teach you how Apple make your iphones photo looks so good because those are results of years of research by team of Phds.
+My exam for the class is also extremely fair and is actually quite easy and we have a lot time toward the end.
+TLDR just because you had a bad experience doesn't mean this is a bad class.
+Upvote 3 Downvote Reply Award Share
+
+Rujularora
+• 5y ago
+who is your instructor?
+Upvote 1 Downvote Reply Award Share

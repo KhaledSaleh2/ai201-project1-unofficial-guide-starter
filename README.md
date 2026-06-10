@@ -7,6 +7,22 @@
 
 ---
 
+## Running it
+
+```bash
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env          # then paste your free Groq API key (console.groq.com)
+
+python rag.py build           # ingest documents/, chunk, embed, store in ChromaDB (387 chunks)
+python rag.py ask             # interactive query interface
+python rag.py eval            # run the 5 evaluation questions
+```
+
+Pipeline: Ingestion → per-source-type Chunking → Embedding (`all-MiniLM-L6-v2`) → Vector store (ChromaDB) → Retrieval (top-k=7) → Grounded generation (Groq `llama-3.3-70b-versatile`). See `planning.md` for the architecture diagram and design rationale.
+
+---
+
 ## Domain
 
 <!-- What topic or category of knowledge does your system cover?
@@ -55,13 +71,26 @@ source types: opinionated professor reviews (Rate My Professors), factual grade-
      - Any preprocessing you did before chunking (e.g., stripping HTML, removing headers)
      - What your final chunk count was across all documents -->
 
+I use a different chunking strategy per source type (see planning.md).
+
 **Chunk size:**
+- Rate My Professors: one review per chunk (split on each review's `Helpful / Thumbs up / Thumbs down` footer).
+- MadGrades: one templated natural-language sentence per course.
+- Reddit: fixed 500-character windows.
 
 **Overlap:**
+- Rate My Professors: none (each review is self-contained).
+- MadGrades: none (each course sentence is independent).
+- Reddit: 150 characters (~30%), to preserve context across reply boundaries.
 
-**Why these choices fit your documents:**
+**Preprocessing before chunking:**
+- RMP: stripped the `Helpful / Thumbs up N / Thumbs down N` footers and `ADVERTISING` lines; reduced each review block to its review text.
+- MadGrades: converted each grade-distribution table into a sentence ("...has a cumulative GPA of 3.30... Grade distribution: 35.6% got A...").
+- Reddit: stripped promoted ads (Squarespace, Lenovo, etc.), vote counts, usernames, and UI boilerplate, then applied the sliding window.
 
-**Final chunk count:**
+**Why these choices fit your documents:** Reviews are short and self-contained, so the review is the natural unit and overlap adds nothing. Grade tables can't be embedded meaningfully as numbers, so templating turns them into matchable prose. Reddit comments are long, variable-length, and reply on each other, so fixed windows with overlap keep neighboring context together.
+
+**Final chunk count:** 387 chunks across all documents.
 
 ---
 
@@ -73,9 +102,9 @@ source types: opinionated professor reviews (Rate My Professors), factual grade-
      Consider: context length limits, multilingual support, accuracy on domain-specific text,
      latency, and local vs. API-hosted. -->
 
-**Model used:**
+**Model used:** `all-MiniLM-L6-v2` via sentence-transformers, run locally. It is small and limited, but sufficient here: the corpus is small, the documents are short, and everything is in English. Running locally also means no API key, no rate limits, and student-written content never leaves the machine. Retrieval uses top-k = 7 — a higher k chosen deliberately because the chunks are small (one review / one sentence) and individually carry little context, so more of them are needed to give the LLM enough to work with.
 
-**Production tradeoff reflection:**
+**Production tradeoff reflection:** If cost weren't a constraint I'd move to a model that captures nuance better (e.g. `text-embedding-3-large` or a self-hosted `BGE-large`), because Rate My Professors and Reddit text is informal, sarcastic, human language where nuance matters for retrieval. I'd weigh: accuracy on this slang-heavy domain (favoring a larger model), context length (a longer limit would let me embed bigger Reddit chunks without truncation), latency and per-token cost (favoring local), and data privacy — sending student-written reviews to a third-party API is a real consideration. Multilingual support is low priority since the corpus is all English.
 
 ---
 
@@ -88,9 +117,13 @@ source types: opinionated professor reviews (Rate My Professors), factual grade-
      Do not just say "I told it to use the documents" — show the actual instruction or explain
      the mechanism. -->
 
-**System prompt grounding instruction:**
+**System prompt grounding instruction:** The retrieved chunks are passed to Groq (`llama-3.3-70b-versatile`) as numbered context passages, with this system prompt:
 
-**How source attribution is surfaced in the response:**
+> You are The Unofficial Guide, answering questions about UW-Madison Computer Sciences courses and professors. You must answer ONLY using the numbered context passages provided. Follow these rules strictly: Base every claim on the context. Do NOT use outside knowledge. Cite the passages you use with bracketed numbers like [1], [3]. If the context does not contain the answer, say: "I don't have information on that in my sources." Do not guess or invent details. Reviews may disagree; when they do, summarize the range of opinions.
+
+Generation temperature is set to 0.1 to keep answers tight to the context. Structurally, the question and context are sent in a single user message and only the top-k=7 retrieved chunks are ever provided — the model has no other source of information.
+
+**How source attribution is surfaced in the response:** Two ways. (1) The model cites passages inline with bracketed numbers (`[1]`, `[3]`). (2) After every answer the interface prints a `Sources:` list mapping each number to a human-readable source — e.g. `[1] RateMyProfessors — Remzi Arpaci-Dusseau (CS537)`, `[1] MadGrades — COMP SCI 540`, or `[1] Reddit — CS 537 OS`.
 
 ---
 
@@ -102,11 +135,11 @@ source types: opinionated professor reviews (Rate My Professors), factual grade-
 
 | # | Question | Expected answer | System response (summarized) | Retrieval quality | Response accuracy |
 |---|----------|-----------------|------------------------------|-------------------|-------------------|
-| 1 | | | | | |
-| 2 | | | | | |
-| 3 | | | | | |
-| 4 | | | | | |
-| 5 | | | | | |
+| 1 | Which CS professor gives the most useful or detailed feedback? | A named professor (e.g. Remzi or Cai, who have "Gives good feedback" tags) backed by review quotes | Refused — "I don't have information on that," saying the passages discuss teaching style but not feedback quality | Relevant (pulled real review chunks) | **Inaccurate** — overly conservative refusal; see Failure Case |
+| 2 | Is CS 537 (Operating Systems) considered a hard course? | Yes — hard, very involved projects, but well-regarded | "Yes, a hard course"; cited Reddit on heavy projects (20–30 hrs), "hardest besides 577," generous final curve | Relevant (Reddit 537/500-level threads) | Accurate |
+| 3 | What is the average GPA / grade distribution for CS 540? | 3.30 GPA; ~35.6% A, 23.6% AB, etc. | "Average GPA is 3.30," then the full distribution, cited MadGrades [1] | Relevant (MadGrades CS 540 chunk ranked #1) | Accurate |
+| 4 | Which is more difficult, CS 537 or CS 577 (Algorithms)? | A comparison; both very hard, opinions vary | Both challenging; noted "537 hardest besides 577 algos" and 577 being conceptually hard; said no clear winner | Relevant (Reddit + Bach/Cai 577 reviews) | Accurate (appropriately hedged) |
+| 5 | Does Professor Ali Abedi curve exams? | Not answerable — Abedi has no reviews in the corpus | Refused — "no mention of Professor Ali Abedi in the provided context"; did NOT invent a curve from Remzi's CS 537 reviews | Off-target (pulled other CS 537 profs) but correctly ignored | Accurate (correct refusal — the conflation trap was avoided) |
 
 **Retrieval quality:** Relevant / Partially relevant / Off-target  
 **Response accuracy:** Accurate / Partially accurate / Inaccurate
@@ -126,13 +159,13 @@ source types: opinionated professor reviews (Rate My Professors), factual grade-
      "The embedding model treated the professor's nickname as out-of-vocabulary and returned
      results from an unrelated review" is an explanation. -->
 
-**Question that failed:**
+**Question that failed:** "Which CS professor gives the most useful or detailed feedback?" (Q1)
 
-**What the system returned:**
+**What the system returned:** A refusal — "I don't have information on that in my sources. The provided passages discuss the teaching styles, passion, and helpfulness of various CS professors, but they do not specifically mention the quality or detail of feedback." Retrieval actually returned relevant professor-review chunks (Cai, Remzi, Heimerl), so this is a generation/grounding failure rather than a retrieval miss.
 
-**Root cause (tied to a specific pipeline stage):**
+**Root cause (tied to a specific pipeline stage):** The chunking stage. My Rate My Professors chunker reduces each review block to a single line — the review prose — and discards everything else, including Rate My Professors' structured tag lines such as "Gives good feedback." That tag is the single most direct signal for this exact question, and it was thrown away before embedding. So no chunk in the index actually contains the word "feedback" prominently; the model, correctly following its strict grounding instruction, saw only passages about lectures and humor and refused rather than guessing. The grounding worked as designed — the information simply never made it into a chunk.
 
-**What you would change to fix it:**
+**What you would change to fix it:** Include the tag lines in each RMP chunk — append the captured tags (e.g. "Tags: Gives good feedback, Caring, Amazing lectures") to the review text before embedding. That puts the "feedback" signal into the vector space so it can be retrieved, without changing the one-review-per-chunk strategy.
 
 ---
 
@@ -141,9 +174,9 @@ source types: opinionated professor reviews (Rate My Professors), factual grade-
 <!-- Reflect on how planning.md shaped your implementation.
      Answer both questions with at least 2–3 sentences each. -->
 
-**One way the spec helped you during implementation:**
+**One way the spec helped you during implementation:** Writing the per-source-type chunking strategy in planning.md first made the implementation almost a direct translation — `load_and_chunk()` just dispatches each document to the chunker the spec already described. The MadGrades templating insight in particular paid off directly: because the spec said to turn grade tables into sentences rather than embedding raw numbers, the factual question (Q3, CS 540 GPA) returned the exact 3.30 figure with a clean MadGrades citation, which would not have worked if I had embedded the table as-is.
 
-**One way your implementation diverged from the spec, and why:**
+**One way your implementation diverged from the spec, and why:** The spec said "one review per chunk" but didn't specify *how* I'd isolate the review text from the surrounding metadata and tags. In implementation I took a shortcut — reducing each review block to its single longest line — for speed and robustness against messy formatting. I didn't anticipate that this would discard the RMP tag lines, which cost me the "Gives good feedback" signal and directly caused the Q1 failure (see Failure Case). A spec that had said "keep review text *and* tags" would have avoided it.
 
 ---
 
@@ -160,12 +193,12 @@ source types: opinionated professor reviews (Rate My Professors), factual grade-
 
 **Instance 1**
 
-- *What I gave the AI:*
-- *What it produced:*
-- *What I changed or overrode:*
+- *What I gave the AI:* My Documents list and Chunking Strategy section from planning.md, and asked it to implement ingestion plus the per-source-type chunkers.
+- *What it produced:* `load_and_chunk()` and three chunkers in `rag.py` — `chunk_ratemyprofessors()` (split on the Helpful/Thumbs footer), `chunk_madgrades()` (template tables into sentences), and `chunk_reddit()` (strip ads/UI, then 500/150 sliding window).
+- *What I changed or overrode:* I kept the per-type design and the 500/150 Reddit numbers from my spec. The RMP chunker uses a "longest line per review" heuristic, which I accepted for speed but which dropped the review tags — I later identified this as the root cause of my Q1 failure and documented the fix rather than patching it under time pressure.
 
 **Instance 2**
 
-- *What I gave the AI:*
-- *What it produced:*
-- *What I changed or overrode:*
+- *What I gave the AI:* My Retrieval Approach section (all-MiniLM-L6-v2, top-k=7, ChromaDB) and my grounding requirement (answer only from retrieved chunks, cite sources).
+- *What it produced:* The embedding/storage step using ChromaDB's SentenceTransformer embedding function, a `retrieve()` that returns the top 7 chunks, and a `generate()` that calls Groq's `llama-3.3-70b-versatile` with a grounding system prompt, plus a `Sources:` printout mapping each citation to its origin.
+- *What I changed or overrode:* I set generation temperature to 0.1 for tighter grounding and added an explicit refusal instruction ("say 'I don't have information on that in my sources'"). That refusal behavior is exactly what made the system correctly decline the Q5 Ali Abedi trap instead of hallucinating.
